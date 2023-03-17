@@ -9,7 +9,10 @@ const userbookMapping  =  new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
     },
-    
+    mappingCode:{
+        type:Number,
+        required:true
+    }
    
 },  {
     timestamps: true
