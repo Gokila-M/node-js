@@ -21,6 +21,10 @@ const book  =  new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    authorId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Author',
+    }
    
 },  {
     timestamps: true
