@@ -4,66 +4,60 @@ import User, { validateUser } from "../models/user.js";
 import otpGenerator from 'otp-generator';
 import nodemailer from 'nodemailer'
 
-export const userReg = async (req, res) => {
-    
-    const saltRounds = 10;
-    const val = validateUser(req.body);
-    if (val) return res.status(400).json({ message: val.error });
-    if (!req.body.password)
-      return res.status(400).json({ message: "please enter password" });
-    let email = captialFirstLetter(req.body.email);
+export const userReg = async (req, res) => { 
+    let email=req.body.email;
+    let password = req.body.password; 
     let firstName = captialFirstLetter(req.body.firstName);
     let lastName = captialFirstLetter(req.body.lastName);
+    let saltRounds=10;
+    const val = validateUser(req.body);
+    if (val) return res.status(400).json({ message: val.error });
+    if (!password) return res.status(400).json({ message: "please enter password" }); 
     let exUserPhone = await User.findOne({ mobileNo: req.body.mobileNo });
+    if (exUserPhone)  return res.status(400).json({ message: "Phone No already exists" });
     let exUserEmail = await User.findOne({ email: email });
-    if (exUserEmail)
-      return res.status(400).json({ message: "email already register" });
-    if (exUserPhone)
-      return res.status(400).json({ message: "Phone No already exists" });
-      bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
-      let register = new User({       
-        email: email,
-        password: hash,
-        firstName: firstName,
-        lastName: lastName,
-        dob: req.body.dob,
-        gender: req.body.gender?.toLowerCase(),
-        bloodGroup: req.body.bloodGroup,       
-        mobileNo: req.body.mobileNo,
-       
-      });
-      try {
+    if (exUserEmail)  return res.status(400).json({ message: "email already register" });    
+    bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
+    let register = new User({       
+     email: email,
+     password: hash,
+     firstName: firstName,
+     lastName: lastName,
+     dob: req.body.dob,
+     gender: req.body.gender?.toLowerCase(),
+     bloodGroup: req.body.bloodGroup,       
+     mobileNo: req.body.mobileNo,
+    
+    });
+    try {
         let User = await register.save();
-        res.status(201).json({ message:User});
+        res.status(201).json({ message:"Register Sucessfully"});
       } catch (error) {
         res.status(400).json({ message:error.message });
       }
     });
   };
   export const login = async (req, res) => {
-    let email = captialFirstLetter(req.body.email);
+    let email = req.body.email;
+    let password =req.body.password;
     let foundUser = await User.findOne({ email: email });
-    if (!req.body.email)
-      return res.status(400).json({ message: "please enter email" });
-    if (!req.body.password)
-      return res.status(400).json({ message: "please enter password" });
+    if (!email) return res.status(400).json({ message: "please enter email" });
+    if (!password) return res.status(400).json({ message: "please enter password" });
     if (foundUser) {
-      if (foundUser.isAdmin == false && foundUser.isBlock == true)
-        return res.status(400).json({ message: "your are blocked user" });      
-      bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
-        if (result) {
-          try {
-            const token = jwt.sign({ id:foundUser?._id }, process.env.JWT,);
-            res
-              .header("hrms-auth-token", token)
-              .json({ message: "login successfully", token: token });
-          } catch (error) {
-            res.status(400).json({ message: error.message });
-          }
-        } else {
-          res.status(400).json({ message: "please enter correct password" });
-        }
-      });
+    if (foundUser.isAdmin == false && foundUser.isBlock == true) return res.status(400).json({ message: "your are blocked user" });      
+    bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
+    if (result) {
+      try {
+        const token = jwt.sign({ id:foundUser?._id }, process.env.JWT,);
+        res.header("auth-token", token).json({ message: "login successfully", token: token });
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
+    }
+    else {
+        res.status(400).json({ message: "please enter correct password" });
+      }
+    });
     } else {
       res.status(404).json({ message: "user not found" });
     }

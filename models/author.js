@@ -5,10 +5,7 @@ const author =  new mongoose.Schema({
         type:String,
         required: true
     },
-    email:{
-        type:String,
-        required: true
-    },
+   
     dob:{
         type:String,
         required: true
@@ -17,20 +14,12 @@ const author =  new mongoose.Schema({
         type:String,
         required: true
     },
-   
-    bloodGroup:{
+    email:{
         type:String,
-        required: true
     },
     mobileNo:{
-        type:Number,
-        required: true,
-    
-    },
-    password:{
-        type:String,
-        required: true,
-    },
+        type:Number
+    },    
     isBlock:{
         type:Boolean,
         default:false

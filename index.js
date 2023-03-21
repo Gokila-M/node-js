@@ -3,6 +3,9 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
 import dotenv from "dotenv"
 import user from "./router/user.js"
+import book from "./router/book.js"
+import author from "./router/author.js"
+import mapping from "./router/mapping.js"
 
 dotenv.config()
 const app= express();
@@ -20,7 +23,10 @@ app.get("/",(req,res)=>{
     res.send("Welcome to HRMS V-2")
 })
 app.use("/api/user",user)
+app.use("/api/book",book)
+app.use("/api/author",author)
+app.use("/api/mapping",mapping)
 
 app.listen(port,()=>{
-    console.log("Server connected to "+ port);
+    console.log("Server connected to "+ port);    
 })
