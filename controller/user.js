@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import { captialFirstLetter } from "../config/capitalLetter.js";
 import User, { validateUser } from "../models/user.js";
 import otpGenerator from 'otp-generator';
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
+import jwt from "jsonwebtoken";
 
 export const userReg = async (req, res) => { 
     let email=req.body.email;
@@ -101,3 +102,38 @@ export const userReg = async (req, res) => {
       }
     });
   }
+
+  export const userUpdate = async (req, res) => {
+    let  id  = req.query.id;
+    const exuser = await User.findOne({_id:id});
+    try {
+      if (!id) {
+        return res.status(400).json({ message: "Please Provide A Id In Query" });
+      }
+      if (!exuser) {
+        return res.status(400).json({ message: "User Not Found" });
+      }   
+      await User.findByIdAndUpdate({ _id: id },{$set: req.body},{ new: true });
+      return res.status(200).json({ message: "User Data Updated Successfully" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  export const getAllUser = async (req, res) => {
+   try {
+      const user = await User.find({})
+      return res.status(200).json({ data:user });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+ };
+export const getuserById = async (req, res) => {
+    let id = req.params.id
+    try {
+      const users = await User.findById({ _id:id });
+      if (!users) return res.status(404).json({ message: "User Not Found" });
+      res.status(200).json({ data: users });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+};
