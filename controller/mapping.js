@@ -47,7 +47,7 @@ export const getAllmappings = async (req, res) => {
    }
 };
 export const getmappingById = async (req, res) => {
-   let id = req.params.id
+   let id = req.query.id
    try {
      const mapping = await UserbookMapping.findById({ _id:id });
      if (!mapping) return res.status(404).json({ message: "Mapping Not Found" });

@@ -45,8 +45,8 @@ export const authorReg = async (req, res) => {
        return res.status(500).json({ message: error.message });
      }
   };
- export const getuserById = async (req, res) => {
-     let id = req.params.id
+ export const getauthorById = async (req, res) => {
+     let id = req.query.id
      try {
        const author = await Author.findById({ _id:id });
        if (!author) return res.status(404).json({ message: "Author Not Found" });

@@ -3,7 +3,7 @@
 import Author from "../models/author.js";
 import Book from "../models/book.js";
 
-export const bookReg = async (req, res) => {   
+export const bookCreate = async (req, res) => {   
     let bookName = req.body.bookName;
     let bookType = req.body.bookType; 
     let bookCode = req.body.bookCode; 
@@ -56,7 +56,7 @@ export const bookReg = async (req, res) => {
      }
   };
  export const getbookById = async (req, res) => {
-     let id = req.params.id
+     let id = req.query.id
      try {
        const book = await Book.findById({ _id:id });
        if (!book) return res.status(404).json({ message: "Book Not Found" });

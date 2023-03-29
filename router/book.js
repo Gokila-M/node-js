@@ -1,10 +1,12 @@
 import express from "express";
-import { bookReg } from "../controller/book.js";
+import { bookCreate, bookUpdate, getAllbook, getbookById } from "../controller/book.js";
 
 
 const router = express.Router();
 
-router.post("/register",bookReg)
-
+router.post("/create",bookCreate)
+router.put("/update",bookUpdate)
+router.get("/getbyid",getbookById)
+router.get("/getall",getAllbook)
 
 export default router;
